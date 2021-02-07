@@ -1,6 +1,6 @@
 import Mongoose from "mongoose";
 
-const shiftSchema = new mongoose.Schema(
+const shiftSchema = new Mongoose.Schema(
   {
     day: { type: String },
     users: [{ type: Mongoose.Schema.Types.ObjectId, ref: "Employee" }],
@@ -8,4 +8,5 @@ const shiftSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default Mongoose.model("Shift", shiftSchema);
+const Shift = Mongoose.model("Shift", shiftSchema);
+export default Shift;

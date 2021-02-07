@@ -1,3 +1,70 @@
 type Query {
   hello: String!
+  users(query: String): [User]!
+  loginUser(data: LoginUserInput): Token
+}
+
+type Mutation {
+  createUser(data: CreatUserInput): User!
+}
+
+# USER Type
+type User {
+  id: ID!
+  username: String!
+  role: UserRole
+}
+
+type Token {
+  token: String
+}
+
+input CreatUserInput {
+  username: String!
+  password: String!
+  role: String
+}
+
+input UpdateUserInput {
+  username: String
+  password: String
+}
+
+input LoginUserInput {
+  username: String!
+  password: String!
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+# EMPLOYEE Type
+type Employee {
+  id: ID!
+  employeeId: Int
+  firstName: String!
+  lastName: String!
+  position: String!
+}
+
+input CreatEmplyeeInput {
+  employeeId: Int!
+  firstName: String!
+  lastName: String!
+  position: String!
+}
+
+input UpdateEmplyeeInput {
+  employeeId: Int
+  firstName: String
+  lastName: String
+  position: String
+}
+
+# SHIFT Type
+type Shift {
+  day: String!
+  employees: [User]!
 }
