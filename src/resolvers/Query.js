@@ -32,6 +32,10 @@ const Query = {
     const token = generateToken(user._id);
     return { token };
   },
+  findUserById: async (parent, { id }, { User }, info) => {
+    const user = User.findById({ _id: id });
+    return user;
+  },
 };
 
 export default Query;

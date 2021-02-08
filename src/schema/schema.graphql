@@ -2,10 +2,13 @@ type Query {
   hello: String!
   users(query: String): [User]!
   loginUser(data: LoginUserInput): Token
+  findUserById(id: ID!): User
 }
 
 type Mutation {
   createUser(data: CreatUserInput): User!
+  updateUser(data: UpdateUserInput): User!
+  deleteUser(id: ID!): Message!
 }
 
 # USER Type
@@ -26,8 +29,10 @@ input CreatUserInput {
 }
 
 input UpdateUserInput {
+  id: ID!
   username: String
   password: String
+  role: String
 }
 
 input LoginUserInput {
@@ -67,4 +72,9 @@ input UpdateEmplyeeInput {
 type Shift {
   day: String!
   employees: [User]!
+}
+
+#  Message Type
+type Message {
+  message: String!
 }
