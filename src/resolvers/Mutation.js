@@ -1,8 +1,10 @@
+import Mongoose from "mongoose";
+
 const Mutation = {
   createUser: async (
     parent,
     { data: { username, password, role } },
-    { User },
+    { models: { User } },
     info
   ) => {
     const userExists = await User.findOne({ username: username });
@@ -28,9 +30,14 @@ const Mutation = {
   updateUser: async (
     parent,
     { data: { id, username, password, role } },
-    { User },
+    { models: { User } },
     info
   ) => {
+    const idValid = Mongoose.Types.ObjectId.isValid(id);
+    if (!idValid) {
+      throw new Error("User not found");
+    }
+
     const user = await User.findById({ _id: id });
     if (!user) {
       throw new Error("User Not Found");
@@ -43,7 +50,12 @@ const Mutation = {
     const updatedUser = await user.save();
     return updatedUser;
   },
-  deleteUser: async (parent, { id }, { User }, info) => {
+  deleteUser: async (parent, { id }, { models: { User } }, info) => {
+    const idValid = Mongoose.Types.ObjectId.isValid(id);
+    if (!idValid) {
+      throw new Error("User not found");
+    }
+
     const user = await User.findById({ _id: id });
     if (!user) {
       throw new Error("User Not Found");
@@ -57,6 +69,86 @@ const Mutation = {
       }
     }
     return { message: `User: ${user.username} Deleted` };
+  },
+  createEmployee: async (
+    parent,
+    { data: { employeeId, firstName, lastName, position, rate } },
+    { models: { Employee } },
+    info
+  ) => {
+    const employeeExists = await Employee.findOne({ employeeId });
+
+    //handle error if email is already taken
+    if (employeeExists) {
+      throw new Error(`Employee with id#: ${employeeId}  already exsists`);
+    }
+
+    //create new user object to add to db
+    const employee = new Employee({
+      employeeId,
+      firstName,
+      lastName,
+      position,
+      rate,
+    });
+
+    //save user to db
+    const newEmployee = await employee.save();
+
+    //return user to client
+    return newEmployee;
+  },
+  updateEmployee: async (
+    parent,
+    { employeeId, data: { firstName, lastName, position, rate } },
+    { models: { Employee } },
+    info
+  ) => {
+    console.log(`employeeId: ${employeeId}`);
+    console.log(`firstName: ${firstName}`);
+    console.log(`lastName: ${lastName}`);
+    console.log(`position: ${position}`);
+    console.log(`rate: ${rate}`);
+    const employee = await Employee.findOne({ employeeId });
+    if (!employee) {
+      throw new Error("Employee Not Found");
+    }
+    console.log(employee);
+    firstName
+      ? (employee.firstName = firstName)
+      : (employee.firstName = employee.firstName);
+    lastName
+      ? (employee.lastName = lastName)
+      : (employee.lastName = employee.lastName);
+    position
+      ? (employee.position = position)
+      : (employee.position = employee.position);
+    rate ? (employee.rate = rate) : (employee.rate = employee.rate);
+
+    const updatedEmployee = await employee.save();
+    return updatedEmployee;
+  },
+  deleteEmployee: async (
+    parent,
+    { employeeId },
+    { models: { Employee } },
+    info
+  ) => {
+    const employee = await Employee.findOne({ employeeId });
+    if (!employee) {
+      throw new Error("Employee Not Found");
+    }
+
+    try {
+      await Employee.deleteOne({ _id: employee._id });
+    } catch (err) {
+      if (err) {
+        throw new Error(err);
+      }
+    }
+    return {
+      message: `Employee: ${employee.firstName} ${employee.lastName} with employee id ${employeeId} Deleted`,
+    };
   },
 };
 

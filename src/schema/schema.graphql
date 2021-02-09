@@ -1,14 +1,24 @@
 type Query {
-  hello: String!
-  users(query: String): [User]!
+  #User quries
   loginUser(data: LoginUserInput): Token
+  findUsers(query: String): [User]!
   findUserById(id: ID!): User
+
+  #Employee quries
+  findEmployees(query: String): [Employee]!
+  findEmployeeById(id: ID!): Employee
 }
 
 type Mutation {
+  #User mutations
   createUser(data: CreatUserInput): User!
   updateUser(data: UpdateUserInput): User!
   deleteUser(id: ID!): Message!
+
+  #Employee mutations
+  createEmployee(data: CreatEmployeeInput): Employee!
+  updateEmployee(employeeId: Int!, data: UpdateEmplyeeInput): Employee!
+  deleteEmployee(employeeId: Int!): Message!
 }
 
 # USER Type
@@ -48,24 +58,26 @@ enum UserRole {
 # EMPLOYEE Type
 type Employee {
   id: ID!
-  employeeId: Int
-  firstName: String!
-  lastName: String!
-  position: String!
-}
-
-input CreatEmplyeeInput {
   employeeId: Int!
   firstName: String!
   lastName: String!
   position: String!
+  rate: Float!
+}
+
+input CreatEmployeeInput {
+  employeeId: Int!
+  firstName: String!
+  lastName: String!
+  position: String!
+  rate: Float!
 }
 
 input UpdateEmplyeeInput {
-  employeeId: Int
   firstName: String
   lastName: String
   position: String
+  rate: Int
 }
 
 # SHIFT Type
