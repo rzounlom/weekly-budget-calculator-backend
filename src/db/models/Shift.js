@@ -3,7 +3,8 @@ import Mongoose from "mongoose";
 const shiftSchema = new Mongoose.Schema(
   {
     day: { type: String },
-    users: [{ type: Mongoose.Schema.Types.ObjectId, ref: "Employee" }],
+    employee: { type: Mongoose.Schema.Types.ObjectId, ref: "Employee" },
+    hours: { type: Number, required: "Hours is required" },
   },
   { timestamps: true }
 );

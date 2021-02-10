@@ -19,6 +19,9 @@ type Mutation {
   createEmployee(data: CreatEmployeeInput): Employee!
   updateEmployee(employeeId: Int!, data: UpdateEmplyeeInput): Employee!
   deleteEmployee(employeeId: Int!): Message!
+
+  # Shift mutations
+  createShift(data: CreateShiftInput): Shift
 }
 
 # USER Type
@@ -83,7 +86,19 @@ input UpdateEmplyeeInput {
 # SHIFT Type
 type Shift {
   day: String!
-  employees: [User]!
+  employee: Employee!
+  hours: Int!
+}
+
+input CreateShiftInput {
+  day: String!
+  employeeId: Int!
+  hours: Int!
+}
+
+type Day {
+  day: String!
+  shifts: [Shift]!
 }
 
 #  Message Type
