@@ -23,7 +23,8 @@ type Mutation {
   # Shift mutations
   createShift(data: CreateShiftInput): Shift
   updateShift(data: UpdateShiftInput): Shift
-  deleteShift(data: DeleteShiftInput): Message!
+  deleteSingleShift(data: DeleteShiftInput): Message!
+  deleteShiftsByDay(day: String!): Message!
 }
 
 # USER Type

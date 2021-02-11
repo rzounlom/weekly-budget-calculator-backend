@@ -220,7 +220,7 @@ const Mutation = {
       return updatedShift;
     }
   },
-  deleteShift: async (
+  deleteSingleShift: async (
     parent,
     { data: { day, employeeId } },
     { models: { Shift, Employee } },
@@ -250,6 +250,24 @@ const Mutation = {
         message: `Employee ${employee.firstName} ${employee.lastName} with employee id# ${employeeId} deleted from ${day} shift`,
       };
     }
+  },
+  deleteShiftsByDay: async (parent, { day }, { models: { Shift } }, info) => {
+    //find all shifts based on day
+    const shifts = await Shift.find({ day });
+
+    //return error if not shifts exist
+    if (shifts.length < 1) {
+      throw new Error(`No employees added to ${day} shift yet`);
+    }
+
+    console.log(`shifts: ${shifts}`);
+
+    //if found, delete all shifts
+    await Shift.deleteMany({ day });
+
+    return {
+      message: `${shifts.length} employees removed from ${day} shift`,
+    };
   },
 };
 
