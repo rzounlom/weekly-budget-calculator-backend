@@ -1,4 +1,4 @@
-import Mongoose from "mongoose";
+import Mongoose from 'mongoose';
 
 const Mutation = {
   createUser: async (
@@ -11,7 +11,7 @@ const Mutation = {
 
     //handle error if email is already taken
     if (userExists) {
-      throw new Error("Username already in use");
+      throw new Error('Username already in use');
     }
 
     //create new user object to add to db
@@ -35,12 +35,12 @@ const Mutation = {
   ) => {
     const idValid = Mongoose.Types.ObjectId.isValid(id);
     if (!idValid) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const user = await User.findById({ _id: id });
     if (!user) {
-      throw new Error("User Not Found");
+      throw new Error('User Not Found');
     }
 
     user.username = username || user.username;
@@ -53,12 +53,12 @@ const Mutation = {
   deleteUser: async (parent, { id }, { models: { User } }, info) => {
     const idValid = Mongoose.Types.ObjectId.isValid(id);
     if (!idValid) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const user = await User.findById({ _id: id });
     if (!user) {
-      throw new Error("User Not Found");
+      throw new Error('User Not Found');
     }
 
     try {
@@ -111,7 +111,7 @@ const Mutation = {
     console.log(`rate: ${rate}`);
     const employee = await Employee.findOne({ employeeId });
     if (!employee) {
-      throw new Error("Employee Not Found");
+      throw new Error('Employee Not Found');
     }
     console.log(employee);
     firstName
@@ -136,7 +136,7 @@ const Mutation = {
   ) => {
     const employee = await Employee.findOne({ employeeId });
     if (!employee) {
-      throw new Error("Employee Not Found");
+      throw new Error('Employee Not Found');
     }
 
     try {
@@ -161,10 +161,9 @@ const Mutation = {
 
     //throw error if employee does not exists
     if (!employee) {
-      throw new Error("Employee not found");
+      throw new Error('Employee not found');
     }
 
-    console.log(employee);
     let existingShift;
     //check to see if employee already added to shift with day
     existingShift = await Shift.findOne({
@@ -175,7 +174,9 @@ const Mutation = {
       if (
         JSON.stringify(existingShift.employee) === JSON.stringify(employee._id)
       ) {
-        throw new Error(`Employee already added to ${day} shift`);
+        throw new Error(
+          `Employee ${employee.firstName} ${employee.lastName} with employee id# ${employeeId} already added to ${day} shift`
+        );
       }
     } else {
       const shift = new Shift({
@@ -185,6 +186,41 @@ const Mutation = {
       });
       await shift.save();
       return shift;
+    }
+  },
+  updateShift: async (
+    parent,
+    { data: { day, hours, employeeId } },
+    { models: { Shift, Employee } },
+    info
+  ) => {
+    //find employee
+    const employee = await Employee.findOne({ employeeId });
+
+    //throw error if employee does not exists
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
+
+    let existingShift;
+    //check to see if employee already added to shift with day
+    existingShift = await Shift.findOne({
+      $and: [{ day }, { employee: employee._id }],
+    });
+
+    console.log(existingShift);
+
+    if (!existingShift) {
+      throw new Error('Shift not found');
+    } else {
+      existingShift.hours = hours;
+      existingShift.day = day;
+
+      //save updated shift
+      const updatedShift = await existingShift.save();
+      console.log(updatedShift);
+
+      return updatedShift;
     }
   },
 };
