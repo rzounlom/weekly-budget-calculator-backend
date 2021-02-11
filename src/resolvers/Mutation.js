@@ -208,8 +208,6 @@ const Mutation = {
       $and: [{ day }, { employee: employee._id }],
     });
 
-    console.log(existingShift);
-
     if (!existingShift) {
       throw new Error('Shift not found');
     } else {
@@ -218,9 +216,39 @@ const Mutation = {
 
       //save updated shift
       const updatedShift = await existingShift.save();
-      console.log(updatedShift);
 
       return updatedShift;
+    }
+  },
+  deleteShift: async (
+    parent,
+    { data: { day, employeeId } },
+    { models: { Shift, Employee } },
+    info
+  ) => {
+    //find employee
+    const employee = await Employee.findOne({ employeeId });
+
+    //throw error if employee does not exists
+    if (!employee) {
+      throw new Error('Employee not found');
+    }
+
+    let existingShift;
+    //check to see if employee already added to shift with day
+    existingShift = await Shift.findOne({
+      $and: [{ day }, { employee: employee._id }],
+    });
+
+    if (!existingShift) {
+      throw new Error('Shift not found');
+    } else {
+      //delete shift
+      await existingShift.deleteOne();
+
+      return {
+        message: `Employee ${employee.firstName} ${employee.lastName} with employee id# ${employeeId} deleted from ${day} shift`,
+      };
     }
   },
 };

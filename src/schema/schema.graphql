@@ -23,6 +23,7 @@ type Mutation {
   # Shift mutations
   createShift(data: CreateShiftInput): Shift
   updateShift(data: UpdateShiftInput): Shift
+  deleteShift(data: DeleteShiftInput): Message!
 }
 
 # USER Type
@@ -89,6 +90,11 @@ type Shift {
   day: String!
   employee: Employee!
   hours: Int!
+}
+
+input DeleteShiftInput {
+  employeeId: Int!
+  day: String!
 }
 
 input CreateShiftInput {
