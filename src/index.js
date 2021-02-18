@@ -33,7 +33,7 @@ app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username: username });
   if (!user) {
-    res.status(401).json({ error: "Invalid Credentials" });
+    res.status(401).send({ err: "Invalid Credentials" });
     return;
   }
 
@@ -41,7 +41,8 @@ app.post("/login", async (req, res) => {
   const passwordsMatch = bcrypt.compareSync(password, user.password);
 
   if (!passwordsMatch) {
-    throw new Error("Invalid Credentials");
+    res.status(401).send({ err: "Invalid Credentials" });
+    return new Error("Invalid Credentials");
   }
 
   const token = generateToken(user._id);
