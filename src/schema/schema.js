@@ -5,7 +5,7 @@ const typeDefs = gql`
     #User quries
     loginUser(data: LoginUserInput): Token
     findUsers(query: String): [User]!
-    findUserById(id: ID!): User
+    user(id: ID!): User
 
     #Employee quries
     findEmployees(query: String): [Employee]!

@@ -34,7 +34,7 @@ const Query = {
     const token = generateToken(user._id);
     return { token };
   },
-  findUserById: async (parent, { id }, { models: { User } }, info) => {
+  user: async (parent, { id }, { models: { User } }, info) => {
     const idValid = Mongoose.Types.ObjectId.isValid(id);
     if (!idValid) {
       throw new Error("User not found");
