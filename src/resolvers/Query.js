@@ -70,6 +70,57 @@ const Query = {
 
     return employee;
   },
+  findShifts: async (parent, args, { models: { Shift, Employee } }, info) => {
+    try {
+      const shifts = await Shift.find({}).map(async (shift) => {
+        const employee = await Employee.findOne({ _id: shift.employee });
+        // console.log(`employee: ${employee}`);
+        shift.employee = employee;
+        // console.log(shift);
+        return shift;
+      });
+
+      const shiftEmployees = shifts.map(async (shift) => {
+        const employee = await Employee.findOne({ _id: shift.employee });
+        // console.log(`employee: ${employee}`);
+        shift.employee = employee;
+        // console.log(shift);
+        return shift;
+      });
+      // console.log(shiftEmployees);
+      return shiftEmployees;
+    } catch (err) {
+      if (err) throw new Error(err);
+    }
+  },
+
+  findShiftsByDay: async (
+    parent,
+    { day },
+    { models: { Shift, Employee } },
+    info
+  ) => {
+    try {
+      const shifts = await Shift.find({ day }).map(async (shift) => {
+        const employee = await Employee.findOne({ _id: shift.employee });
+        // console.log(`employee: ${employee}`);
+        shift.employee = employee;
+        // console.log(shift);
+        return shift;
+      });
+
+      const shiftEmployees = shifts.map(async (shift) => {
+        const employee = await Employee.findOne({ _id: shift.employee });
+        // console.log(`employee: ${employee}`);
+        shift.employee = employee;
+        // console.log(shift);
+        return shift;
+      });
+      return shiftEmployees;
+    } catch (err) {
+      if (err) throw new Error(err);
+    }
+  },
 };
 
 export default Query;

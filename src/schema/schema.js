@@ -2,14 +2,18 @@ import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type Query {
-    #User quries
+    #User queries
     loginUser(data: LoginUserInput): Token
     findUsers(query: String): [User]!
     user(id: ID!): User
 
-    #Employee quries
+    #Employee queries
     findEmployees(query: String): [Employee]!
     findEmployeeById(id: ID!): Employee
+
+    #Shift queries
+    findShifts: [Shift]!
+    findShiftsByDay(day: String!): [Shift]!
   }
 
   type Mutation {
