@@ -80,7 +80,7 @@ const Mutation = {
 
     //handle error if email is already taken
     if (employeeExists) {
-      throw new Error(`Employee with id#: ${employeeId}  already exsists`);
+      throw new Error(`Employee with id ${employeeId}  already exsists`);
     }
 
     //create new user object to add to db
@@ -104,16 +104,10 @@ const Mutation = {
     { models: { Employee } },
     info
   ) => {
-    console.log(`employeeId: ${employeeId}`);
-    console.log(`firstName: ${firstName}`);
-    console.log(`lastName: ${lastName}`);
-    console.log(`position: ${position}`);
-    console.log(`rate: ${rate}`);
     const employee = await Employee.findOne({ employeeId });
     if (!employee) {
       throw new Error("Employee Not Found");
     }
-    console.log(employee);
     firstName
       ? (employee.firstName = firstName)
       : (employee.firstName = employee.firstName);
@@ -175,7 +169,7 @@ const Mutation = {
         JSON.stringify(existingShift.employee) === JSON.stringify(employee._id)
       ) {
         throw new Error(
-          `Employee ${employee.firstName} ${employee.lastName} with employee id# ${employeeId} already added to ${day} shift`
+          `Employee ${employee.firstName} ${employee.lastName} with employee id ${employeeId} already added to ${day} shift`
         );
       }
     } else {
@@ -247,7 +241,7 @@ const Mutation = {
       await existingShift.deleteOne();
 
       return {
-        message: `Employee ${employee.firstName} ${employee.lastName} with employee id# ${employeeId} deleted from ${day} shift`,
+        message: `Employee ${employee.firstName} ${employee.lastName} with employee id ${employeeId} deleted from ${day} shift`,
       };
     }
   },
@@ -260,7 +254,7 @@ const Mutation = {
       throw new Error(`No employees added to ${day} shift yet`);
     }
 
-    console.log(`shifts: ${shifts}`);
+    // console.log(`shifts: ${shifts}`);
 
     //if found, delete all shifts
     await Shift.deleteMany({ day });
