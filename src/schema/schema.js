@@ -97,7 +97,7 @@ const typeDefs = gql`
   type Shift {
     day: String!
     employee: Employee!
-    hours: Int!
+    hours: Float!
   }
 
   input DeleteShiftInput {
@@ -108,13 +108,13 @@ const typeDefs = gql`
   input CreateShiftInput {
     day: String!
     employeeId: Int!
-    hours: Int!
+    hours: Float!
   }
 
   input UpdateShiftInput {
     employeeId: Int!
     day: String!
-    hours: Int!
+    hours: Float!
   }
 
   type Day {
