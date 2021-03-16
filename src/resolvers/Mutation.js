@@ -179,7 +179,9 @@ const Mutation = {
         day,
       });
       await shift.save();
-      return shift;
+      return {
+        message: `Successfully created ${day} shift for ${employee.firstName} ${employee.lastName} with employee id ${employeeId}`,
+      };
     }
   },
   updateShift: async (
@@ -211,7 +213,9 @@ const Mutation = {
       //save updated shift
       const updatedShift = await existingShift.save();
 
-      return updatedShift;
+      return {
+        message: `${day} shift updated for ${employee.firstName} ${employee.lastName}`,
+      };
     }
   },
   deleteSingleShift: async (
@@ -260,7 +264,7 @@ const Mutation = {
     await Shift.deleteMany({ day });
 
     return {
-      message: `${shifts.length} employees removed from ${day} shift`,
+      message: `${shifts.length} employee(s) removed from ${day} shift`,
     };
   },
 };

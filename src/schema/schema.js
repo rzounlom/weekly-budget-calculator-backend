@@ -28,8 +28,8 @@ const typeDefs = gql`
     deleteEmployee(employeeId: Int!): Message!
 
     # Shift mutations
-    createShift(data: CreateShiftInput): Shift
-    updateShift(data: UpdateShiftInput): Shift
+    createShift(data: CreateShiftInput): Message!
+    updateShift(data: UpdateShiftInput): Message!
     deleteSingleShift(data: DeleteShiftInput): Message!
     deleteShiftsByDay(day: String!): Message!
   }
