@@ -180,7 +180,7 @@ const Mutation = {
       });
       await shift.save();
       return {
-        message: `Successfully created ${day} shift for ${employee.firstName} ${employee.lastName} with employee id ${employeeId}`,
+        message: `Successfully created ${day} shift for ${employee.firstName} ${employee.lastName}`,
       };
     }
   },
@@ -245,7 +245,7 @@ const Mutation = {
       await existingShift.deleteOne();
 
       return {
-        message: `Employee ${employee.firstName} ${employee.lastName} with employee id ${employeeId} deleted from ${day} shift`,
+        message: `Employee ${employee.firstName} ${employee.lastName} deleted from ${day} shift`,
       };
     }
   },
