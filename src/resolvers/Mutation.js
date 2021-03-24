@@ -25,7 +25,7 @@ const Mutation = {
     const newUser = await user.save();
 
     //return user to client
-    return newUser;
+    return { message: `New user ${newUser.username} successfully created` };
   },
   updateUser: async (
     parent,
@@ -48,7 +48,7 @@ const Mutation = {
     user.role = role || user.role;
 
     const updatedUser = await user.save();
-    return updatedUser;
+    return { message: `User ${updatedUser.username} successfully updated` };
   },
   deleteUser: async (parent, { id }, { models: { User } }, info) => {
     const idValid = Mongoose.Types.ObjectId.isValid(id);
@@ -96,36 +96,48 @@ const Mutation = {
     const newEmployee = await employee.save();
 
     //return user to client
-    return newEmployee;
+    return {
+      message: `Successfully added employee ${newEmployee.firstName} ${newEmployee.lastName}`,
+    };
   },
   updateEmployee: async (
     parent,
     { employeeId, data: { firstName, lastName, position, rate } },
-    { models: { Employee } },
+    { models: { Employee, Shift } },
     info
   ) => {
     const employee = await Employee.findOne({ employeeId });
     if (!employee) {
       throw new Error("Employee Not Found");
     }
-    firstName
-      ? (employee.firstName = firstName)
-      : (employee.firstName = employee.firstName);
-    lastName
-      ? (employee.lastName = lastName)
-      : (employee.lastName = employee.lastName);
-    position
-      ? (employee.position = position)
-      : (employee.position = employee.position);
-    rate ? (employee.rate = rate) : (employee.rate = employee.rate);
 
-    const updatedEmployee = await employee.save();
-    return updatedEmployee;
+    try {
+      firstName
+        ? (employee.firstName = firstName)
+        : (employee.firstName = employee.firstName);
+      lastName
+        ? (employee.lastName = lastName)
+        : (employee.lastName = employee.lastName);
+      position
+        ? (employee.position = position)
+        : (employee.position = employee.position);
+      rate ? (employee.rate = rate) : (employee.rate = employee.rate);
+
+      const updatedEmployee = await employee.save();
+
+      return {
+        message: `Employee: ${updatedEmployee.firstName} ${updatedEmployee.lastName} updated`,
+      };
+    } catch (errors) {
+      if (errors) {
+        throw new Error(errors);
+      }
+    }
   },
   deleteEmployee: async (
     parent,
     { employeeId },
-    { models: { Employee } },
+    { models: { Employee, Shift } },
     info
   ) => {
     const employee = await Employee.findOne({ employeeId });
@@ -135,14 +147,39 @@ const Mutation = {
 
     try {
       await Employee.deleteOne({ _id: employee._id });
-    } catch (err) {
-      if (err) {
-        throw new Error(err);
+      await Shift.deleteMany({ employee: employee._id });
+    } catch (errors) {
+      if (errors) {
+        throw new Error(errors);
       }
     }
     return {
-      message: `Employee: ${employee.firstName} ${employee.lastName} with employee id ${employeeId} Deleted`,
+      message: `Employee: ${employee.firstName} ${employee.lastName} Deleted`,
     };
+  },
+  deleteAllEmployees: async (
+    parent,
+    args,
+    { models: { Shift, Employee } },
+    info
+  ) => {
+    try {
+      const employeesToDelete = await Employee.find({});
+      const shiftsToDelete = await Shift.find({});
+      if (employeesToDelete.length === 0) {
+        throw new Error(`No Employees to Delete`);
+      } else {
+        await Employee.deleteMany({});
+        await Shift.deleteMany({});
+        return {
+          message: `${employeesToDelete.length} Employees and ${shiftsToDelete.length} Employee Shifts deleted`,
+        };
+      }
+    } catch (errors) {
+      if (errors) {
+        throw new Error(errors);
+      }
+    }
   },
   createShift: async (
     parent,

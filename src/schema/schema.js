@@ -18,14 +18,15 @@ const typeDefs = gql`
 
   type Mutation {
     #User mutations
-    createUser(data: CreatUserInput): User!
-    updateUser(data: UpdateUserInput): User!
+    createUser(data: CreateUserInput): Message!
+    updateUser(data: UpdateUserInput): Message!
     deleteUser(id: ID!): Message!
 
     #Employee mutations
-    createEmployee(data: CreatEmployeeInput): Employee!
-    updateEmployee(employeeId: Int!, data: UpdateEmplyeeInput): Employee!
+    createEmployee(data: CreatEmployeeInput): Message!
+    updateEmployee(employeeId: Int!, data: UpdateEmplyeeInput): Message!
     deleteEmployee(employeeId: Int!): Message!
+    deleteAllEmployees: Message!
 
     # Shift mutations
     createShift(data: CreateShiftInput): Message!
@@ -45,7 +46,7 @@ const typeDefs = gql`
     token: String
   }
 
-  input CreatUserInput {
+  input CreateUserInput {
     username: String!
     password: String!
     role: String
@@ -90,7 +91,7 @@ const typeDefs = gql`
     firstName: String
     lastName: String
     position: String
-    rate: Int
+    rate: Float
   }
 
   # SHIFT Type
