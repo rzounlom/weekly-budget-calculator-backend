@@ -21,6 +21,7 @@ const typeDefs = gql`
     createUser(data: CreateUserInput): Message!
     updateUser(data: UpdateUserInput): Message!
     deleteUser(id: ID!): Message!
+    deleteAllUsers: Message!
 
     #Employee mutations
     createEmployee(data: CreatEmployeeInput): Message!

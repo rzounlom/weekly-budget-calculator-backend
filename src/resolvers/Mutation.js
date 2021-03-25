@@ -68,7 +68,25 @@ const Mutation = {
         throw new Error(err);
       }
     }
-    return { message: `User: ${user.username} Deleted` };
+    return { message: `User ${user.username} deleted` };
+  },
+  deleteAllUsers: async (parent, args, { models: { User } }, info) => {
+    try {
+      const usersToDelete = await User.find({ role: "USER" });
+
+      if (usersToDelete.length === 0) {
+        throw new Error(`No user(s) with role "USER" to delete`);
+      } else {
+        await User.deleteMany({ role: "USER" });
+        return {
+          message: `${usersToDelete.length} user(s) with role "USER" successfully deleted`,
+        };
+      }
+    } catch (errors) {
+      if (errors) {
+        throw new Error(errors);
+      }
+    }
   },
   createEmployee: async (
     parent,
@@ -80,7 +98,7 @@ const Mutation = {
 
     //handle error if email is already taken
     if (employeeExists) {
-      throw new Error(`Employee with id ${employeeId}  already exsists`);
+      throw new Error(`Employee with id ${employeeId} already exsists`);
     }
 
     //create new user object to add to db
@@ -108,7 +126,7 @@ const Mutation = {
   ) => {
     const employee = await Employee.findOne({ employeeId });
     if (!employee) {
-      throw new Error("Employee Not Found");
+      throw new Error("Employee not found");
     }
 
     try {
@@ -126,7 +144,7 @@ const Mutation = {
       const updatedEmployee = await employee.save();
 
       return {
-        message: `Employee: ${updatedEmployee.firstName} ${updatedEmployee.lastName} updated`,
+        message: `Employee: ${updatedEmployee.firstName} ${updatedEmployee.lastName} successfully updated`,
       };
     } catch (errors) {
       if (errors) {
@@ -142,7 +160,7 @@ const Mutation = {
   ) => {
     const employee = await Employee.findOne({ employeeId });
     if (!employee) {
-      throw new Error("Employee Not Found");
+      throw new Error("Employee not found");
     }
 
     try {
@@ -154,7 +172,7 @@ const Mutation = {
       }
     }
     return {
-      message: `Employee: ${employee.firstName} ${employee.lastName} Deleted`,
+      message: `Employee: ${employee.firstName} ${employee.lastName} successfully deleted`,
     };
   },
   deleteAllEmployees: async (
@@ -172,7 +190,7 @@ const Mutation = {
         await Employee.deleteMany({});
         await Shift.deleteMany({});
         return {
-          message: `${employeesToDelete.length} Employees and ${shiftsToDelete.length} Employee Shifts deleted`,
+          message: `${employeesToDelete.length} Employees and ${shiftsToDelete.length} Employee shifts successfully deleted`,
         };
       }
     } catch (errors) {
@@ -251,7 +269,7 @@ const Mutation = {
       const updatedShift = await existingShift.save();
 
       return {
-        message: `${day} shift updated for ${employee.firstName} ${employee.lastName}`,
+        message: `${day} shift successfully updated for ${employee.firstName} ${employee.lastName}`,
       };
     }
   },
@@ -282,7 +300,7 @@ const Mutation = {
       await existingShift.deleteOne();
 
       return {
-        message: `Employee ${employee.firstName} ${employee.lastName} deleted from ${day} shift`,
+        message: `Employee ${employee.firstName} ${employee.lastName} successfully deleted from ${day} shift`,
       };
     }
   },
@@ -301,7 +319,7 @@ const Mutation = {
     await Shift.deleteMany({ day });
 
     return {
-      message: `${shifts.length} employee(s) removed from ${day} shift`,
+      message: `${shifts.length} employee(s) successfully removed from ${day} shift`,
     };
   },
 };
